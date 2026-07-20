@@ -48,6 +48,13 @@ load_conf() {
     if [ -f "$SCRIPT_DIR/.new_project.conf" ]; then
         source "$SCRIPT_DIR/.new_project.conf"
     fi
+
+    # 自动清除旧仓库地址缓存 (旧模板已废弃)
+    if [ "$REPO_URL" = "https://github.com/Rh-i/MSPM0_FreeRTOS_PIDTEST" ]; then
+        echo "  ⚠ 检测到旧版模板仓库地址，已自动重置"
+        REPO_URL=""
+        save_user_conf
+    fi
 }
 
 save_user_conf() {
