@@ -368,7 +368,7 @@ OLD_SYSCFG="$NEW_DIR/SysConfig/m0test.syscfg"
 NEW_SYSCFG="$NEW_DIR/SysConfig/${NEW_NAME}.syscfg"
 [ -f "$OLD_SYSCFG" ] && mv "$OLD_SYSCFG" "$NEW_SYSCFG"
 
-sed -i "s/project(m0test /project(${NEW_NAME} /" "$NEW_DIR/CMakeLists.txt"
+sed -i "s|__PROJECT_NAME__|${NEW_NAME}|g" "$NEW_DIR/CMakeLists.txt"
 
 # ==================== [4/4] 预留目录 ====================
 
