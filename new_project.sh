@@ -356,7 +356,7 @@ cat > "$NEW_DIR/CMakePresets.json" << JSONEOF
 }
 JSONEOF
 
-sed -i "s|__MSPM0_SDK_PATH__|$SDK_PATH|g" "$NEW_DIR/mspm0g350x_base.cmake"
+sed -i "s|^set(MSPM0_SDK_PATH .*|set(MSPM0_SDK_PATH  $SDK_PATH)|" "$NEW_DIR/mspm0g350x_base.cmake"
 
 true  # SysConfig path injected into CMakePresets.json above
 
@@ -368,7 +368,7 @@ OLD_SYSCFG="$NEW_DIR/SysConfig/m0test.syscfg"
 NEW_SYSCFG="$NEW_DIR/SysConfig/${NEW_NAME}.syscfg"
 [ -f "$OLD_SYSCFG" ] && mv "$OLD_SYSCFG" "$NEW_SYSCFG"
 
-sed -i "s|__PROJECT_NAME__|${NEW_NAME}|g" "$NEW_DIR/CMakeLists.txt"
+sed -i "s|^project(\S* |project(${NEW_NAME} |" "$NEW_DIR/CMakeLists.txt"
 
 # ==================== [4/4] 预留目录 ====================
 
