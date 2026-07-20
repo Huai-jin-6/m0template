@@ -119,7 +119,7 @@ if $BOOTSTRAP; then
 
     # --- Git 仓库地址 ---
     if [ -z "$REPO_URL" ]; then
-        printf "Git 仓库地址 [https://github.com/user/mspm0-template.git]: " >&2
+        printf "Git 仓库地址 [git@github.com:Huai-jin-6/m0template.git]: " >&2
         read -r input
         REPO_URL="${input:-${REPO_URL:-git@github.com:Huai-jin-6/m0template.git}}"
     fi
