@@ -356,7 +356,7 @@ cat > "$NEW_DIR/CMakePresets.json" << JSONEOF
 }
 JSONEOF
 
-sed -i "s|set(MSPM0_SDK_PATH .*|set(MSPM0_SDK_PATH  $SDK_PATH)|" "$NEW_DIR/mspm0g350x_base.cmake"
+sed -i "s|__MSPM0_SDK_PATH__|$SDK_PATH|g" "$NEW_DIR/mspm0g350x_base.cmake"
 
 true  # SysConfig path injected into CMakePresets.json above
 
