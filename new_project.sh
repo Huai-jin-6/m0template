@@ -285,7 +285,6 @@ echo "[1/4] 复制文件..."
 
 mkdir -p "$NEW_DIR"
 cp "$TEMPLATE_DIR/CMakeLists.txt"         "$NEW_DIR/"
-cp "$TEMPLATE_DIR/CMakePresets.json"      "$NEW_DIR/"
 cp "$TEMPLATE_DIR/mspm0g350x_base.cmake"  "$NEW_DIR/"
 cp "$TEMPLATE_DIR/.gitignore"             "$NEW_DIR/"
 # 生成 clangd 配置文件 (不依赖模板仓库)
@@ -328,17 +327,34 @@ cp -r "$TEMPLATE_DIR/SysConfig/" "$NEW_DIR/SysConfig/"
 test -d "$TEMPLATE_DIR/.vscode" && cp -r "$TEMPLATE_DIR/.vscode/" "$NEW_DIR/.vscode/" || true
 rm -f "$NEW_DIR/User/Service/"*.d 2>/dev/null || true
 
-# ==================== [2/4] 注入路径 ====================
+# ==================== [2/4] 生成 CMakePresets.json ====================
 
-echo "[2/4] 注入本机路径..."
+echo "[2/4] 生成 CMakePresets.json..."
 
-sed -i "s|\"CMAKE_C_COMPILER\":.*|\"CMAKE_C_COMPILER\": \"$TOOLCHAIN_GCC\",|" "$NEW_DIR/CMakePresets.json"
-sed -i "s|\"CMAKE_CXX_COMPILER\":.*|\"CMAKE_CXX_COMPILER\": \"$TOOLCHAIN_GXX\",|" "$NEW_DIR/CMakePresets.json"
+# 转义反斜杠为 JSON 兼容格式
+GCC_JSON=$(echo "$TOOLCHAIN_GCC" | sed 's|\\|/|g')
+GXX_JSON=$(echo "$TOOLCHAIN_GXX" | sed 's|\\|/|g')
 
-# 如果模板没有 generator 则自动注入 Ninja
-if ! grep -q '"generator"' "$NEW_DIR/CMakePresets.json"; then
-    sed -i 's|"binaryDir":|"generator": "Ninja",\n            "binaryDir":|' "$NEW_DIR/CMakePresets.json"
-fi
+cat > "$NEW_DIR/CMakePresets.json" << JSONEOF
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "debug",
+            "displayName": "GCC arm-none-eabi",
+            "description": "C: ${GCC_JSON}, CXX: ${GXX_JSON}",
+            "generator": "Ninja",
+            "binaryDir": "\${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "${GCC_JSON}",
+                "CMAKE_CXX_COMPILER": "${GXX_JSON}",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        }
+    ]
+}
+JSONEOF
 
 sed -i "s|set(MSPM0_SDK_PATH .*|set(MSPM0_SDK_PATH  $SDK_PATH)|" "$NEW_DIR/mspm0g350x_base.cmake"
 
