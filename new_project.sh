@@ -146,8 +146,7 @@ if $BOOTSTRAP; then
         echo "  ✓ 模板目录已存在，跳过克隆"
     else
         echo "  正在克隆..."
-        ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
-        GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new" \
+        git clone "$REPO_URL" "$TEMPLATE_DIR"
             git clone "$REPO_URL" "$TEMPLATE_DIR"
         echo "  ✓ 克隆完成"
     fi
