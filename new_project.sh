@@ -49,10 +49,16 @@ load_conf() {
         source "$SCRIPT_DIR/.new_project.conf"
     fi
 
-    # 自动清除旧仓库地址缓存 (旧模板已废弃)
+    # Auto-clear outdated repo URL cache
     if [ "$REPO_URL" = "https://github.com/Rh-i/MSPM0_FreeRTOS_PIDTEST" ]; then
-        echo "  ⚠ 检测到旧版模板仓库地址，已自动重置"
+        echo "  ⚠ Detected old template repo URL, auto-resetting"
         REPO_URL=""
+        save_user_conf
+    fi
+    # Auto-convert SSH URL to HTTPS (SSH not configured for most teammates)
+    if echo "$REPO_URL" | grep -q '^git@github\.com'; then
+        REPO_URL=$(echo "$REPO_URL" | sed 's|^git@github\.com:|https://github.com/|')
+        echo "  ⚠ Converted SSH to HTTPS: $REPO_URL"
         save_user_conf
     fi
 }
