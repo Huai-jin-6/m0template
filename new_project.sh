@@ -147,7 +147,6 @@ if $BOOTSTRAP; then
     else
         echo "  正在克隆..."
         git clone "$REPO_URL" "$TEMPLATE_DIR"
-            git clone "$REPO_URL" "$TEMPLATE_DIR"
         echo "  ✓ 克隆完成"
     fi
 
