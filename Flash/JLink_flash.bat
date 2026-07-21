@@ -1,17 +1,17 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM 获取当前脚本所在目录的父目录名称（项目名称）
+REM Get the project name (parent directory of this script)
 for %%i in ("%~dp0\..") do set "PROJECT_NAME=%%~nxi"
 
-REM 构建 ELF 文件路径
+REM Build ELF file path
 set "ELF_FILE=build\!PROJECT_NAME!.elf"
 
-REM 检查文件是否存在
+REM Check if file exists
 if not exist "!ELF_FILE!" (
     echo Error: ELF file not found at !ELF_FILE!
     
-    REM 尝试查找 build 目录下的 .elf 文件
+    REM Try to find .elf files in build directory
     if exist "build\*.elf" (
         echo Looking for available ELF files in build directory...
         for %%f in (build\*.elf) do (
@@ -30,7 +30,7 @@ if not exist "!ELF_FILE!" (
 echo Project Name: !PROJECT_NAME!
 echo ELF File: !ELF_FILE!
 
-REM 创建临时 J-Link 脚本
+REM Create temporary J-Link script
 set "TEMP_SCRIPT=temp_jlink_script.jlink"
 (
 echo device MSPM0G3507
@@ -43,13 +43,13 @@ echo go
 echo exit
 ) > "!TEMP_SCRIPT!"
 
-REM J-Link 安装路径
-set "JLINK_PATH=D:\Toolchain\Jlink\JLink_V958"
+REM J-Link installation path
+set "JLINK_PATH=C:\Program Files\SEGGER\JLink_V960"
 
-REM 执行 J-Link
+REM Execute J-Link
 "!JLINK_PATH!\JLink.exe" -CommanderScript "!TEMP_SCRIPT!"
 
-REM 清理临时文件
+REM Clean up temp file
 del "!TEMP_SCRIPT!"
 
 pause
